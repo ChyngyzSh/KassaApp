@@ -67,17 +67,57 @@ public class MainController {
     private Button btnClose;
 
     @FXML
-    void onCloseClicked(ActionEvent event) {
+    private Label lblCashierName;
 
-        boolean isSaveResult = OperationService
-                .INSTANCE
-                .closeAndSaveOperation(Double.parseDouble(txtTotal.getText()), 0, operationProductsList);
-        Alert alert;
-        if(isSaveResult){
-            alert = new Alert(Alert.AlertType.INFORMATION,"Операция завершена");
-        }else {
-            alert = new Alert(Alert.AlertType.INFORMATION,"Ошибка при завершении операции");
-        }alert.show();
+    @FXML
+    private TextField txtUserCash;
+
+    @FXML
+    void onCloseClicked(ActionEvent event) {
+        if(txtUserCash.getText().trim().isEmpty()){
+            Alert alert = new Alert(Alert.AlertType.INFORMATION,"Внесите сумму оплаты");
+            alert.show();
+            return;
+        }else if((Double.parseDouble(txtUserCash.getText().trim()) >= Double.parseDouble(txtTotal.getText().trim()))){
+
+            boolean isSaveResult = OperationService
+                    .INSTANCE
+                    .closeAndSaveOperation(Double.parseDouble(txtTotal.getText()), 0, operationProductsList);
+
+            if(!isSaveResult){
+                Alert alert = new Alert(Alert.AlertType.INFORMATION,"Ошибка при завершении покупки");
+                alert.show();
+                return;
+            }
+            Stage stage = new Stage();
+            FXMLLoader loader = new FXMLLoader(Main.class.getResource("chequeForm.fxml"));
+            try {
+                Scene scene = new Scene(loader.load());
+                stage.setScene(scene);
+                stage.initModality(Modality.WINDOW_MODAL);
+                stage.setTitle("Чек покупки");
+                stage.setResizable(false);
+
+                ChequeController controller = loader.getController();
+                controller.setData(Double.parseDouble(txtUserCash.getText().trim()) - Double.parseDouble(txtTotal.getText().trim())
+                        ,operationProductsList);
+
+                stage.showAndWait();
+                operationProductsList.clear();
+                refreshList();
+                txtBarcode.clear();
+                txtTotal.clear();
+                txtUserCash.clear();
+
+
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+
+        }else{
+            Alert alert = new Alert(Alert.AlertType.INFORMATION,"Недостаточно средств для завершения покупки");
+            alert.show();
+        }
     }
 
     @FXML
