@@ -1,0 +1,26 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.ListView?>
+<?import javafx.scene.control.Menu?>
+<?import javafx.scene.control.MenuBar?>
+<?import javafx.scene.control.MenuItem?>
+<?import javafx.scene.layout.BorderPane?>
+
+<BorderPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="237.0" prefWidth="258.0" xmlns="http://javafx.com/javafx/18" xmlns:fx="http://javafx.com/fxml/1" fx:controller="kg.megacom.kassaapp.controllers.CategoryController">
+   <top>
+      <MenuBar BorderPane.alignment="CENTER">
+        <menus>
+          <Menu mnemonicParsing="false" text="Действие">
+            <items>
+              <MenuItem fx:id="mnItemAdd" mnemonicParsing="false" onAction="#onMenuItemClicked" text="Добавить" />
+                  <MenuItem fx:id="mnItemEdit" mnemonicParsing="false" onAction="#onMenuItemClicked" text="Редактировать" />
+                  <MenuItem fx:id="mnItemDelete" mnemonicParsing="false" onAction="#onMenuItemClicked" text="Удалить" />
+            </items>
+          </Menu>
+        </menus>
+      </MenuBar>
+   </top>
+   <center>
+      <ListView fx:id="listViewCategories" prefHeight="222.0" prefWidth="325.0" BorderPane.alignment="CENTER" />
+   </center>
+</BorderPane>
