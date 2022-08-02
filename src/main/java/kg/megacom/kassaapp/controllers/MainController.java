@@ -12,6 +12,7 @@ import javafx.stage.Stage;
 import kg.megacom.kassaapp.Main;
 import kg.megacom.kassaapp.models.OperationProducts;
 import kg.megacom.kassaapp.models.Product;
+import kg.megacom.kassaapp.models.User;
 import kg.megacom.kassaapp.services.OperationService;
 import kg.megacom.kassaapp.services.ProductService;
 import kg.megacom.kassaapp.services.impl.ProductServiceImpl;
@@ -72,9 +73,15 @@ public class MainController {
     @FXML
     private TextField txtUserCash;
 
+    private User user;
+
     @FXML
     void onCloseClicked(ActionEvent event) {
-        if(txtUserCash.getText().trim().isEmpty()){
+        if(operationProductsList.isEmpty()){
+            Alert alert = new Alert(Alert.AlertType.INFORMATION,"Нет товаров для покупки");
+            alert.show();
+            return;
+        }else if(txtUserCash.getText().trim().isEmpty()){
             Alert alert = new Alert(Alert.AlertType.INFORMATION,"Внесите сумму оплаты");
             alert.show();
             return;
@@ -82,7 +89,7 @@ public class MainController {
 
             boolean isSaveResult = OperationService
                     .INSTANCE
-                    .closeAndSaveOperation(Double.parseDouble(txtTotal.getText()), 0, operationProductsList);
+                    .closeAndSaveOperation(Double.parseDouble(txtTotal.getText()), 0,operationProductsList);
 
             if(!isSaveResult){
                 Alert alert = new Alert(Alert.AlertType.INFORMATION,"Ошибка при завершении покупки");
@@ -109,11 +116,9 @@ public class MainController {
                 txtTotal.clear();
                 txtUserCash.clear();
 
-
             } catch (IOException e) {
                 e.printStackTrace();
             }
-
         }else{
             Alert alert = new Alert(Alert.AlertType.INFORMATION,"Недостаточно средств для завершения покупки");
             alert.show();
@@ -123,14 +128,17 @@ public class MainController {
     @FXML
     void onEnterClicked(ActionEvent event) {
 
+        Product product = ProductService.INSTANCE.findProductByBarcode(txtBarcode.getText());
         if (txtBarcode.getText().trim().isEmpty()) {
             Alert alert = new Alert(Alert.AlertType.WARNING, "Введите штрих-код товара!");
             alert.show();
             return;
         }
-
-        Product product = ProductService.INSTANCE.findProductByBarcode(txtBarcode.getText());
-
+        if(product == null){
+            Alert alert = new Alert(Alert.AlertType.WARNING, "Товар по штрих-коду не найден!");
+            alert.show();
+            return;
+        }
         addProductToList(product);
 
         refreshList();
@@ -228,6 +236,7 @@ public class MainController {
         colmAmountPrice.setCellValueFactory(new PropertyValueFactory<>("total"));//total_price
         colmProduct.setCellValueFactory(new PropertyValueFactory<>("product"));
 
+
 //        colmDiscount.setCellValueFactory(new PropertyValueFactory<>("discount"));
 //        colmUnit.setCellValueFactory(new PropertyValueFactory<>("unit"));
 
@@ -235,5 +244,9 @@ public class MainController {
 
     }
 
+    public void setData(User user) {
+        this.user = user;
+        lblCashierName.setText(this.user.getName());
+    }
 }
 

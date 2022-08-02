@@ -16,5 +16,5 @@ public interface UserDB {
     void update(User user);
     List<User> getAllUsersFromFB();
 
-
+    User findUserByLoginAndPasswordInDb(String login, String password);
 }

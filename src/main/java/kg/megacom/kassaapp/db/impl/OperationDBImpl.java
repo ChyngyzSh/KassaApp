@@ -10,15 +10,16 @@ import java.sql.ResultSet;
 
 public class OperationDBImpl implements OperationDB {
     @Override
-    public Operation saveOperation(Operation operation) {
+    public Operation saveOperation(Operation operation, int userId) {
         Connection connection = null;
         Operation operationFromDb = null;
         try {
             connection = ConnectionDB.INSTANCE.getConnection();
-            String query = "insert into operations (oper_date, total_price) values (?, ?)";
+            String query = "insert into operations (oper_date, total_price, user_id) values (?, ?, ?)";
             PreparedStatement ps = connection.prepareStatement(query);
             ps.setString(1, operation.getAddDate().toString());
             ps.setDouble(2, operation.getTotal());
+            ps.setInt(3, userId);
             ps.execute();
             operationFromDb = findOperationByTotalPriceAndOperDate(operation.getTotal(),operation.getAddDate().toString());
         } catch (Exception e) {

@@ -55,6 +55,11 @@ public class UserServiceImpl implements UserService {
         return PositionDB.INSTANCE.findPositions();
     }
 
+    @Override
+    public User findUserByLoginAndPassword(String login, String password) {
+        return UserDB.INSTANCE.findUserByLoginAndPasswordInDb(login,password);
+    }
+
 //    public User findOneUserById(int id){
 //        return
 //    }

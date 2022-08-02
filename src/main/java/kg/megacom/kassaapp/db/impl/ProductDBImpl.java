@@ -135,7 +135,7 @@ public class ProductDBImpl implements ProductDB {
     }
     public Product findProductByBarcode(String barcode) {
         Connection connection = null;
-        Product product = new Product();
+        Product product = null;
         try {
             connection = ConnectionDB.INSTANCE.getConnection();
             PreparedStatement ps = connection.prepareStatement("SELECT p.id, p.name, p.category_id, p.price, p.unit_id, p.barcode, p.amount, \n" +
@@ -147,26 +147,32 @@ public class ProductDBImpl implements ProductDB {
                     "where barcode = ?");
             ps.setString(1,barcode);
 
-            ResultSet resultSet = ps.executeQuery();
+            ResultSet rs = ps.executeQuery();
 
-            product.setId(resultSet.getInt(1));
-            product.setName(resultSet.getString(2));
-            product.setBarcode(barcode);
-            product.setDiscount(resultSet.getInt(8));
-            product.setAmount(resultSet.getDouble(7));
-            product.setPrice(resultSet.getDouble(4));
+            if(rs.next()){
+                product = new Product();
+                product.setId(rs.getInt(1));
+                product.setName(rs.getString(2));
+                product.setBarcode(barcode);
+                product.setDiscount(rs.getInt(8));
+                product.setAmount(rs.getDouble(7));
+                product.setPrice(rs.getDouble(4));
 
-            Category category = new Category();
-            category.setId(resultSet.getInt(3));
-            category.setName(resultSet.getString(9));
+                Category category = new Category();
+                category.setId(rs.getInt(3));
+                category.setName(rs.getString(9));
 
-            product.setCategory(category);
+                product.setCategory(category);
 
-            Unit unit = new Unit();
-            unit.setId(resultSet.getInt(5));
-            unit.setName(resultSet.getString(10));
+                Unit unit = new Unit();
+                unit.setId(rs.getInt(5));
+                unit.setName(rs.getString(10));
 
-            product.setUnit(unit);
+                product.setUnit(unit);
+            }else {
+                return null;
+            }
+
 
         } catch (SQLException e) {
             e.printStackTrace();

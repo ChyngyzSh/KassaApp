@@ -26,11 +26,17 @@ public class ChequeController {
 
     public void setData(double change, List<OperationProducts> operationProductsList){
         txtChange.cancelEdit();
-        txtChange.setText(String.valueOf(change));
+        //txtChange.setText(String.valueOf(change));
         //txtChange.setText(formatter.format(String.valueOf(change)));
+        txtChange.setText(String.valueOf(formatter.format(change)));
         chequeLV.setItems(FXCollections.observableList(operationProductsList));
 
     }
+
+    /*
+    DecimalFormat decFor = new DecimalFormat("###.#####");
+    labelName.setText(String.valueOf(decFor.format(452.5959595995)));
+     */
     @FXML
     void initialize() {
 

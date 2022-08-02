@@ -18,4 +18,6 @@ public interface UserService {
 
     List<Position> getPositions();
 
+    User findUserByLoginAndPassword(String login, String password);
+
 }

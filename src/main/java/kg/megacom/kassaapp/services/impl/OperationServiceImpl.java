@@ -13,11 +13,7 @@ public class OperationServiceImpl implements OperationService {
 
     public boolean closeAndSaveOperation(double totalPrice, int userId, List<OperationProducts> operationProductsList) {
         System.out.println(operationProductsList);
-        Operation operation = OperationDB.INSTANCE.saveOperation(new Operation(LocalDateTime.now(),totalPrice));
+        Operation operation = OperationDB.INSTANCE.saveOperation(new Operation(LocalDateTime.now(),totalPrice), userId);
         return OperationProductService.INSTANCE.saveOperationProducts(operation.getId(),operationProductsList);
     }
 }
-/*
-Operation operation = OperationDb.INSTANCE.saveOperation(new Operation(LocalDateTime.now(), totalPrice));
-        return OperationProductService.INSTANCE.saveOperationProducts(operation.getId(), operationProductsList);
- */
